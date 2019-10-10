@@ -2,7 +2,7 @@ package com.ex.training.algs.quickfind;
 
 import java.util.Arrays;
 
-public class QuickFindUF {
+public class QuickFindUF implements UnionFind {
 
 	private int[] id;
 
@@ -13,10 +13,12 @@ public class QuickFindUF {
 		}
 	}
 
+	@Override
 	public boolean connected(int p, int q) {
 		return id[p] == id[q];
 	}
 
+	@Override
 	public void union(int p, int q) {
 		int pValue = id[p];
 		int qValue = id[q];

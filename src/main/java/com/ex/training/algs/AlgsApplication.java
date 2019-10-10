@@ -7,6 +7,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.ex.training.algs.quickfind.QuickFindUF;
+import com.ex.training.algs.quickfind.QuickUnionUF;
+import com.ex.training.algs.quickfind.UnionFind;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,41 +23,65 @@ public class AlgsApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		var scanner = new Scanner(System.in);
-		
+
 		switch (AlgorithmName.valueOf(args[0])) {
 		case QUICK_FIND:
-			runQuickFind(scanner);
+			runUnionFind(scanner, buildAlgorithm(scanner, AlgorithmName.QUICK_FIND));
+			break;
+
+		case QUICK_UNION:
+			runUnionFind(scanner, buildAlgorithm(scanner, AlgorithmName.QUICK_UNION));
 			break;
 		default:
 			break;
 		}
-		
-		
+
+		scanner.close();
 
 	}
 
-	private void runQuickFind(Scanner scanner) {
+	private UnionFind buildAlgorithm(Scanner scanner, AlgorithmName algorithmName) {
 		log.info("Size: ");
-		int n = scanner.nextInt();
-		final QuickFindUF quickFindUF = new QuickFindUF(n);
-		log.info("Array created {}", quickFindUF.toString());
-		String line = "";
-		while (!line.equalsIgnoreCase("q")) {
-			log.info("Nodes to join?");
-			int p = scanner.nextInt();
-			int q = scanner.nextInt();
 
-			if (quickFindUF.connected(p, q))
-				continue;
-			quickFindUF.union(p, q);
-			log.info("p {} q {}", p, q);
-			log.info("Union {}", quickFindUF.toString());
-			log.info("To continue press C otherwise Q");
-			line = scanner.next();
+		int n = scanner.nextInt();
+		UnionFind unionFind = null;
+		switch (algorithmName) {
+		case QUICK_FIND:
+			unionFind = new QuickFindUF(n);
+			break;
+
+		case QUICK_UNION:
+			unionFind = new QuickUnionUF(n);
+			break;
+		default:
+			log.info("Unsupported operation");
+			break;
 		}
 
-		log.info("Union {}", quickFindUF.toString());
-		scanner.close();
+		log.info("Array created {}", unionFind);
+		return unionFind;
+	}
+
+	private void runUnionFind(Scanner scanner, UnionFind unionFind) {
+		if (null != unionFind) {
+			String line = "";
+			while (!line.equalsIgnoreCase("q")) {
+				log.info("Nodes to join?");
+				int p = scanner.nextInt();
+				int q = scanner.nextInt();
+
+				if (unionFind.connected(p, q)) {
+					log.info("{} and {} Already connected!!!", p, q);
+					continue;
+				}
+				unionFind.union(p, q);
+				log.info("p {} q {}", p, q);
+				log.info("Union {}", unionFind.toString());
+				log.info("To continue press C otherwise Q");
+				line = scanner.next();
+			}
+			log.info("Union {}", unionFind.toString());
+		}
 	}
 
 }
