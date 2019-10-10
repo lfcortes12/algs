@@ -16,6 +16,7 @@ build/
 bin/**
 **/bin/**
 /bin/**
+*.class
 
 ### IntelliJ IDEA ###
 .idea
